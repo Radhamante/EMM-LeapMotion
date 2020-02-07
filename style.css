@@ -23,4 +23,14 @@ canvas
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: -1
+}
+audio{
+    display: none
+}
+#audio_choice_right{
+    display: inline;
+}
+#audio_choice_left{
+    display: inline;
 }
