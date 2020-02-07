@@ -55,7 +55,7 @@ scene.add(camera)
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer()
-renderer.setClearColor(0x000000, 1)
+renderer.setClearColor(0x000022, 1)
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
 document.body.appendChild(renderer.domElement)
@@ -66,6 +66,7 @@ document.body.appendChild(renderer.domElement)
  * Orbit controls
  */
 const controls = new OrbitControls(camera, renderer.domElement)
+controls.enabled = false
 
 /**
  * controller leap
@@ -178,6 +179,8 @@ circle_2.rotation.x = -1.45
 circle_2.position.y = 50
 circle_2.position.x = 98
 circle_2.position.z = 10
+
+
 /**
  * light
  */
@@ -194,13 +197,42 @@ scene.add(pointLight)
 const pointLightOnOff = new THREE.PointLight(0xff0000, 5, 25)
 scene.add(pointLightOnOff)
 
+const palm = new THREE.Mesh(
+    new THREE.BoxBufferGeometry(40,3,50),
+    new THREE.MeshBasicMaterial({color:0xc8c8c8,opacity:0.4,transparent:true})
+    )
+scene.add(palm)
 
 
 const indexMeshTip = new THREE.Mesh(
-    new THREE.SphereBufferGeometry(5),
-    new THREE.MeshStandardMaterial({color:0xFF0000})
+    new THREE.SphereBufferGeometry(6),
+    new THREE.MeshBasicMaterial({color:0x970000})
 )
 scene.add(indexMeshTip)
+
+const middleMeshTip = new THREE.Mesh(
+    new THREE.SphereBufferGeometry(5),
+    new THREE.MeshBasicMaterial({color:0xc8c8c8,opacity:0.4,transparent:true})
+)
+scene.add(middleMeshTip)
+
+const ringMeshTip = new THREE.Mesh(
+    new THREE.SphereBufferGeometry(5),
+    new THREE.MeshBasicMaterial({color:0xc8c8c8,opacity:0.4,transparent:true})
+)
+scene.add(ringMeshTip)
+
+const pinkyMeshTip = new THREE.Mesh(
+    new THREE.SphereBufferGeometry(5),
+    new THREE.MeshBasicMaterial({color:0xc8c8c8,opacity:0.4,transparent:true})
+)
+scene.add(pinkyMeshTip)
+
+const thumbMeshTip = new THREE.Mesh(
+    new THREE.SphereBufferGeometry(5),
+    new THREE.MeshBasicMaterial({color:0xc8c8c8,opacity:0.4,transparent:true})
+)
+scene.add(thumbMeshTip)
 
 
 /**
@@ -250,7 +282,7 @@ const btnBLL = document.querySelector(".btnBLL");
 let reader = new FileReader();
 
 const audioRight = document.querySelector("#audio_choice_right")
-const audioLeft = document.querySelector("#audio_choice_left");
+const audioLeft = document.getElementById("audio_choice_left");
 
 let OnOffTimer = false
 
@@ -269,35 +301,50 @@ const textMaterial = new THREE.MeshBasicMaterial({color:0xccccff})
 let textRight = new THREE.Mesh()
 let textLeft = new THREE.Mesh()
 
-
+//right
 audioFileRight.onchange = function(){
-    reader.onload = function(e){
+    reader.onload = function(){
         audioRight.src = this.result;
         audioRight.controls = true;
         audioRight.crossOrigin = "anonymous";
-        audioRight.play();
     }
+    countR = 0
     console.log(reader.readAsDataURL(this.files[0]))
     nameRight = document.getElementById("audioFileRight").files[0].name.replace(".mp3","")
-    console.log(nameRight)
+    console.log(document.getElementById("audioFileRight").files[0])
 
-    for (let index = 0; index < 9; index++) {
-        NameTmp.push(nameRight[index])
-    }
-    realNameRight = NameTmp.join('')
-    NameTmp = []
+    drawNameRight()
     // scene.remove(textRight)
+    
+}
+
+let countR = 0
+setInterval(()=>{
+    if(nameRight != undefined){
+        for (let index = countR; index < countR+10; index++) {
+            NameTmp.push(nameRight[index])
+        }
+        if (countR == nameRight.length-9){
+            countR = 0
+        }else if(nameRight.length-9 >= 0){
+            countR += 1
+        }
+        realNameRight = NameTmp.join('')
+        NameTmp = []
+        drawNameRight()
+    }
+},500)
+
+
+const drawNameRight = () =>{
     fontLoader.load( '/font.json', function ( font ) {
+        console.log("test")
         const textGeometryRight = new THREE.TextGeometry( realNameRight, {
             font: font,
             size: 14,
             height: 0,
             curveSegments: 12,
             bevelEnabled: false,
-            bevelThickness: 2,
-            bevelSize: 2,
-            bevelOffset: 0.4,
-            bevelSegments: 2
         })
         textRight.material = textMaterial
         textRight.geometry = textGeometryRight
@@ -305,30 +352,13 @@ audioFileRight.onchange = function(){
         textRight.position.y = 28
         textRight.position.z = 93 
         textRight.rotation.x = -Math.PI/2
-
         scene.add(textRight)
     })
 }
 
-audioFileLeft.onchange = function(event){
-    reader.onload = function(e){
-        audioLeft.src = this.result;
-        audioLeft.controls = true;
-        audioLeft.crossOrigin = "anonymous";
-        audioLeft.play();
-        // console.log()
+//left
 
-    }
-    console.log(reader.readAsDataURL(this.files[0]))
-    nameLeft = document.getElementById("audioFileLeft").files[0].name.replace(".mp3","")
-    console.log(nameLeft)
-
-    for (let index = 0; index < 9; index++) {
-        NameTmp.push(nameLeft[index])
-    }
-    realNameLeft = NameTmp.join('')
-    NameTmp = []
-    // scene.remove(textLeft)
+const drawNameLeft = () =>{
     fontLoader.load( '/font.json', function ( font ) {
         const textGeometryLeft = new THREE.TextGeometry( realNameLeft, {
             font: font,
@@ -336,10 +366,6 @@ audioFileLeft.onchange = function(event){
             height: 0,
             curveSegments: 12,
             bevelEnabled: false,
-            bevelThickness: 2,
-            bevelSize: 2,
-            bevelOffset: 0.4,
-            bevelSegments: 2
         })
         textLeft.material = textMaterial
         textLeft.geometry = textGeometryLeft
@@ -351,6 +377,43 @@ audioFileLeft.onchange = function(event){
         scene.add(textLeft)
     })
 }
+
+let countL = 0
+setInterval(()=>{
+    if(nameLeft != undefined){
+        for (let index = countL; index < countL+10; index++) {
+            NameTmp.push(nameLeft[index])
+        }
+        if (countL == nameLeft.length-9){
+            countL = 0
+        }else if(nameLeft.length-9 >= 0){
+            countL += 1
+        }
+        realNameLeft = NameTmp.join('')
+        NameTmp = []
+        drawNameLeft()
+    } 
+},500)
+
+    audioFileLeft.onchange = function(event){
+        reader.onload = function(e){
+            audioLeft.src = this.result;
+            audioLeft.controls = true;
+            audioLeft.crossOrigin = "anonymous";
+        }
+        countL = 0
+        console.log(reader.readAsDataURL(this.files[0]))
+        nameLeft = document.getElementById("audioFileLeft").files[0].name.replace(".mp3","")
+        
+        for (let index = 0; index < 9; index++) {
+            NameTmp.push(nameLeft[index])
+        }
+        realNameLeft = NameTmp.join('')
+        NameTmp = []
+        // scene.remove(textLeft)
+        // console.log(Math.round(audioLeft.duration))
+    }
+
 
 pointLightOnOff.position.z = -70
 pointLightOnOff.position.x = -100
@@ -406,7 +469,7 @@ controller.on('frame', (frame) => {
                         disque_droit_tourne = false
                         disque_gauche_tourne = false
                         audioLeft.pause()
-                        audioLeft.pause()
+                        audioRight.pause()
                     }else {
                         on = true
                         pointLightOnOff.color.setHex(0x00ff00)
@@ -435,7 +498,30 @@ controller.on('frame', (frame) => {
         indexMeshTip.position.x = hand.indexFinger.tipPosition[0]*2 + 150
         indexMeshTip.position.y = hand.indexFinger.tipPosition[1]-70
         indexMeshTip.position.z = hand.indexFinger.tipPosition[2]
-        // console.log(indexMeshTip.position)
+
+        middleMeshTip.position.x = hand.middleFinger.tipPosition[0]*2 + 130
+        middleMeshTip.position.y = hand.middleFinger.tipPosition[1]-70
+        middleMeshTip.position.z = hand.middleFinger.tipPosition[2]
+
+        ringMeshTip.position.x = hand.ringFinger.tipPosition[0]*2 + 110
+        ringMeshTip.position.y = hand.ringFinger.tipPosition[1]-70
+        ringMeshTip.position.z = hand.ringFinger.tipPosition[2]
+
+        pinkyMeshTip.position.x = hand.pinky.tipPosition[0]*2 + 90
+        pinkyMeshTip.position.y = hand.pinky.tipPosition[1]-70
+        pinkyMeshTip.position.z = hand.pinky.tipPosition[2]
+
+        thumbMeshTip.position.x = hand.thumb.tipPosition[0]*2 + 180
+        thumbMeshTip.position.y = hand.thumb.tipPosition[1]-70
+        thumbMeshTip.position.z = hand.thumb.tipPosition[2]
+
+        palm.position.x = hand.palmPosition[0]*2 + 100
+        palm.position.y = hand.palmPosition[1]-70
+        palm.position.z = hand.palmPosition[2]
+
+        // palm.rotation.x = -hand.palmNormal[2]
+        palm.rotation.x = hand.direction[1]
+        palm.rotation.y = -(hand.direction[0]*1.6)-0.3
         if (on == true){
             
             if (hand.pinchStrength >= 0.95){
@@ -570,12 +656,12 @@ controller.on('frame', (frame) => {
             // SWIPE
             
             if (frame.gestures[0] != undefined) {
-                if (frame.gestures[0].type == "swipe" && isSwipe == false && indexMeshTip.position.x >= 40){
+                if (frame.gestures[0].type == "swipe" && isSwipe == false && indexMeshTip.position.x >= 40 && nameRight != undefined){
                     isSwipe = true
                     disque_droit_tourne = true
                     setTimeout(()=>{isSwipe = false},1000) 
                 }
-                if(frame.gestures[0].type == "swipe" && isSwipe == false && indexMeshTip.position.x << 40){
+                if(frame.gestures[0].type == "swipe" && isSwipe == false && indexMeshTip.position.x << 40 && nameLeft != undefined){
                     isSwipe = true
                     
                     disque_gauche_tourne = true

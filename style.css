@@ -26,11 +26,8 @@ canvas
     z-index: -1
 }
 audio{
+    display: none;
+}
+input{
     display: none
-}
-#audio_choice_right{
-    display: inline;
-}
-#audio_choice_left{
-    display: inline;
 }
