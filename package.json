@@ -15,7 +15,7 @@
     "gsap": "^3.0.5",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-static-files-copy": "^2.2.2",
-    "three": "^0.112.1"
+    "three": "^0.125.0"
   },
   "dependencies": {
     "assets": "^3.0.1",
